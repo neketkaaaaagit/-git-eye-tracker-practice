@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Веб-стенд для исследования трекинга взгляда: камера, калибровка, AOI, heatmap, экспорт результатов, Docker и CI/CD."
+    />
+    <title>Eye Tracking Research Stand</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero card">
+        <div>
+          <p class="eyebrow">Практическое решение · Eye tracking research stand</p>
+          <h1>Стенд исследования трекинга взгляда для мониторинга визуальной работы</h1>
+          <p class="lead">
+            Контейнеризуемое веб-приложение для демонстрации методов eye tracking в браузере.
+            Подходит как исследовательский стенд: камера, 9-точечная калибровка, heatmap,
+            AOI-анализ, фиксации, моргания и экспорт сессии.
+          </p>
+          <div class="hero-tags">
+            <span>Локальная обработка</span>
+            <span>MediaPipe</span>
+            <span>Docker</span>
+            <span>GitHub Actions</span>
+          </div>
+        </div>
+        <div class="card hero-side">
+          <h2>Соответствие практике</h2>
+          <ul class="check-list compact">
+            <li>контейнеризуемое решение</li>
+            <li>сценарии ручного и smoke-тестирования</li>
+            <li>CI/CD для проверки и деплоя</li>
+            <li>документация по развёртыванию и отчёту</li>
+          </ul>
+          <p class="muted small">
+            Важно: это исследовательский прототип и учебный стенд, а не медицинское изделие.
+          </p>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="card controls-panel">
+          <h2>Управление</h2>
+          <div class="controls-grid">
+            <button id="startCameraBtn" class="btn primary">Включить камеру</button>
+            <button id="stopCameraBtn" class="btn" disabled>Выключить камеру</button>
+            <button id="startCalibrationBtn" class="btn">Калибровка 9 точек</button>
+            <button id="capturePointBtn" class="btn" disabled>Сохранить вручную</button>
+            <button id="resetCalibrationBtn" class="btn danger">Сбросить калибровку</button>
+            <button id="startSessionBtn" class="btn success" disabled>Начать сессию</button>
+            <button id="stopSessionBtn" class="btn" disabled>Остановить сессию</button>
+            <button id="clearSessionBtn" class="btn">Очистить данные</button>
+            <button id="exportCsvBtn" class="btn" disabled>Экспорт CSV</button>
+            <button id="exportJsonBtn" class="btn" disabled>Экспорт JSON</button>
+          </div>
+
+          <div class="field-group">
+            <label for="imageLoader">Тестовое изображение для анализа зон внимания</label>
+            <input id="imageLoader" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+            <p class="muted tiny">
+              По умолчанию загружено демонстрационное изображение. Не используйте реальные персональные
+              медицинские данные в публичном деплое.
+            </p>
+          </div>
+
+          <div class="field-group">
+            <label for="heatmapOpacity">Насыщенность heatmap</label>
+            <input id="heatmapOpacity" type="range" min="5" max="50" value="18" />
+          </div>
+
+          <div class="field-group">
+            <label for="smoothingRange">Сглаживание взгляда</label>
+            <input id="smoothingRange" type="range" min="5" max="45" value="20" />
+          </div>
+
+          <div class="notes-box">
+            <h3>Как использовать стенд</h3>
+            <ol>
+              <li>Запусти приложение через localhost, Docker или GitHub Pages.</li>
+              <li>Включи камеру и дождись распознавания лица.</li>
+              <li>Выполни 9-точечную калибровку.</li>
+              <li>Загрузи тестовый снимок и запусти сессию.</li>
+              <li>Собери CSV/JSON для отчёта или последующего анализа.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="card camera-panel">
+          <div class="panel-head">
+            <h2>Камера и landmarks</h2>
+            <span id="statusBadge" class="badge">Инициализация…</span>
+          </div>
+          <div class="video-stage">
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="overlay"></canvas>
+          </div>
+          <p class="muted tiny">
+            Разметка глаз и радужки рисуется поверх видеопотока. Обработка выполняется локально в браузере.
+          </p>
+        </section>
+
+        <section id="boardPanel" class="card board-panel">
+          <div class="panel-head board-head">
+            <h2>Рабочая область исследования</h2>
+            <div class="panel-head-actions">
+              <button id="toggleBoardFullscreenBtn" class="btn board-fullscreen-btn">Во весь экран</button>
+              <span id="currentZoneBadge" class="badge secondary">Зона: —</span>
+            </div>
+          </div>
+          <p id="boardHint" class="muted">
+            Выполни калибровку, затем начни сессию и анализируй распределение внимания по зонам интереса.
+          </p>
+          <div id="calibrationToolbar" class="calibration-toolbar hidden">
+            <div>
+              <strong>Калибровка активна</strong>
+              <p class="muted tiny calibration-toolbar-note">
+                Смотри на белую точку и удерживай взгляд — кадры собираются автоматически. Кнопка нужна только как ручной резервный вариант. Также можно нажать <kbd>Space</kbd> или <kbd>Enter</kbd>.
+              </p>
+            </div>
+            <div class="calibration-toolbar-actions">
+              <button id="capturePointFloatingBtn" class="btn primary" disabled>Сохранить вручную</button>
+              <button id="resetCalibrationInlineBtn" class="btn danger">Сбросить</button>
+            </div>
+          </div>
+          <div id="gazeBoard" class="gaze-board">
+            <img id="boardImage" class="board-image" src="./assets/sample-radiology.svg" alt="Тестовое изображение" />
+            <canvas id="heatmapCanvas" class="heatmap-canvas"></canvas>
+            <div class="grid-overlay"></div>
+            <div class="aoi-label aoi-1">A1</div>
+            <div class="aoi-label aoi-2">A2</div>
+            <div class="aoi-label aoi-3">A3</div>
+            <div class="aoi-label aoi-4">B1</div>
+            <div class="aoi-label aoi-5">B2</div>
+            <div class="aoi-label aoi-6">B3</div>
+            <div class="aoi-label aoi-7">C1</div>
+            <div class="aoi-label aoi-8">C2</div>
+            <div class="aoi-label aoi-9">C3</div>
+            <div id="gazeDot" class="gaze-dot hidden"></div>
+            <button id="calibrationTarget" class="calibration-target hidden" aria-label="Точка калибровки"></button>
+          </div>
+        </section>
+
+        <section class="card metrics-panel">
+          <h2>Метрики сессии</h2>
+          <div class="metric-list">
+            <div class="metric-row"><span>Статус</span><strong id="statusText">Нажмите «Включить камеру»</strong></div>
+            <div class="metric-row"><span>Калибровка</span><strong id="calibrationStatus">Не выполнена</strong></div>
+            <div class="metric-row"><span>Режим сессии</span><strong id="sessionStatus">Не запущена</strong></div>
+            <div class="metric-row"><span>Сырые координаты</span><strong id="rawValues">—</strong></div>
+            <div class="metric-row"><span>Точек в сессии</span><strong id="sampleCount">0</strong></div>
+            <div class="metric-row"><span>Время наблюдения</span><strong id="trackedTime">0.0 c</strong></div>
+            <div class="metric-row"><span>Фиксации</span><strong id="fixationCount">0</strong></div>
+            <div class="metric-row"><span>Моргания</span><strong id="blinkCount">0</strong></div>
+          </div>
+
+          <div class="subsection">
+            <div class="panel-head small-head">
+              <h3>Распределение по AOI</h3>
+              <span id="fixationStateBadge" class="badge secondary">Фиксация: нет</span>
+            </div>
+            <div class="aoi-table-wrap">
+              <table class="aoi-table">
+                <thead>
+                  <tr>
+                    <th>Зона</th>
+                    <th>Время, c</th>
+                    <th>Доля</th>
+                  </tr>
+                </thead>
+                <tbody id="aoiTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="card practice-panel">
+          <h2>Что закрывает практику</h2>
+          <ul class="check-list">
+            <li>стенд развёртывается локально и в контейнере;</li>
+            <li>есть данные для тестирования и воспроизводимого запуска;</li>
+            <li>реализована фиксация результатов исследования;</li>
+            <li>есть документация по Docker, CI/CD и отчёту;</li>
+            <li>можно публиковать статическую версию через GitHub Pages.</li>
+          </ul>
+          <div class="note-callout">
+            <strong>Для темы о рентгенологе:</strong>
+            <span>
+              используй загруженные тестовые снимки, анализ зон внимания и export CSV/JSON как основу
+              для описания наблюдения и сравнения стратегий просмотра изображения.
+            </span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

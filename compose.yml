@@ -1,0 +1,7 @@
+services:
+  eye-tracker-stand:
+    build: .
+    container_name: eye-tracker-stand
+    ports:
+      - "8080:80"
+    restart: unless-stopped

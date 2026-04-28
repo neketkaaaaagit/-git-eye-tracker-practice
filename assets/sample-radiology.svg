@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Демонстрационное рентгеновское изображение">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#1b1f28"/>
+      <stop offset="100%" stop-color="#05070c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="45%">
+      <stop offset="0%" stop-color="#c8d2df" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#7f8b99" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0b0f16" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <rect x="70" y="70" width="1060" height="760" rx="26" fill="#0a0e15" stroke="#333d4d" stroke-width="3"/>
+  <ellipse cx="600" cy="370" rx="350" ry="280" fill="url(#glow)" opacity="0.9"/>
+  <ellipse cx="450" cy="360" rx="130" ry="230" fill="#dfe6ee" opacity="0.17"/>
+  <ellipse cx="750" cy="360" rx="130" ry="230" fill="#dfe6ee" opacity="0.17"/>
+  <ellipse cx="600" cy="500" rx="165" ry="220" fill="#e8edf3" opacity="0.12"/>
+  <path d="M390 230c-40 70-55 160-42 250" stroke="#e5ebf2" stroke-width="14" opacity="0.28" fill="none" stroke-linecap="round"/>
+  <path d="M810 230c40 70 55 160 42 250" stroke="#e5ebf2" stroke-width="14" opacity="0.28" fill="none" stroke-linecap="round"/>
+  <path d="M470 280c36 32 62 72 78 120" stroke="#f4f8fc" stroke-width="12" opacity="0.2" fill="none" stroke-linecap="round"/>
+  <path d="M730 280c-36 32-62 72-78 120" stroke="#f4f8fc" stroke-width="12" opacity="0.2" fill="none" stroke-linecap="round"/>
+  <circle cx="600" cy="325" r="35" fill="#f5f8fb" opacity="0.12"/>
+  <circle cx="600" cy="390" r="55" fill="#f5f8fb" opacity="0.08"/>
+  <path d="M520 560c40 35 120 35 160 0" stroke="#f0f5fa" stroke-width="16" opacity="0.14" fill="none" stroke-linecap="round"/>
+  <rect x="108" y="108" width="984" height="684" rx="18" fill="none" stroke="#66717f" stroke-dasharray="12 12" opacity="0.18"/>
+  <g opacity="0.32" filter="url(#blur)">
+    <circle cx="430" cy="260" r="35" fill="#fff"/>
+    <circle cx="785" cy="290" r="40" fill="#fff"/>
+    <circle cx="605" cy="610" r="55" fill="#fff"/>
+  </g>
+  <text x="120" y="810" fill="#8f9aaa" font-size="24" font-family="Arial, sans-serif">Демонстрационное изображение для AOI и heatmap. Не является медицинскими данными.</text>
+</svg>

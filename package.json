@@ -1,0 +1,15 @@
+{
+  "name": "eye-tracker-practice-stand",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Контейнеризуемый веб-стенд для исследования трекинга взгляда.",
+  "scripts": {
+    "dev": "node ./scripts/dev-server.mjs",
+    "test": "node ./tests/smoke.mjs",
+    "build": "node ./scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
