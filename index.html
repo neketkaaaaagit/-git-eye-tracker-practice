@@ -16,12 +16,7 @@
         <div>
           <p class="eyebrow">Практическое решение · Eye tracking research stand</p>
           <h1>Стенд исследования трекинга взгляда для мониторинга визуальной работы</h1>
-          <p class="lead">
-            Контейнеризуемое веб-приложение для демонстрации методов eye tracking в браузере.
-            Подходит как исследовательский стенд: камера, 9-точечная калибровка, heatmap,
-            AOI-анализ, фиксации, моргания и экспорт сессии.
-          </p>
-          <div class="hero-tags">
+                    <div class="hero-tags">
             <span>Локальная обработка</span>
             <span>MediaPipe</span>
             <span>Docker</span>
@@ -36,10 +31,7 @@
             <li>CI/CD для проверки и деплоя</li>
             <li>документация по развёртыванию и отчёту</li>
           </ul>
-          <p class="muted small">
-            Важно: это исследовательский прототип и учебный стенд, а не медицинское изделие.
-          </p>
-        </div>
+                 </div>
       </header>
 
       <main class="dashboard">
@@ -61,11 +53,7 @@
           <div class="field-group">
             <label for="imageLoader">Тестовое изображение для анализа зон внимания</label>
             <input id="imageLoader" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
-            <p class="muted tiny">
-              По умолчанию загружено демонстрационное изображение. Не используйте реальные персональные
-              медицинские данные в публичном деплое.
-            </p>
-          </div>
+                      </div>
 
           <div class="field-group">
             <label for="heatmapOpacity">Насыщенность heatmap</label>
@@ -77,17 +65,7 @@
             <input id="smoothingRange" type="range" min="5" max="45" value="20" />
           </div>
 
-          <div class="notes-box">
-            <h3>Как использовать стенд</h3>
-            <ol>
-              <li>Запусти приложение через localhost, Docker или GitHub Pages.</li>
-              <li>Включи камеру и дождись распознавания лица.</li>
-              <li>Выполни 9-точечную калибровку.</li>
-              <li>Загрузи тестовый снимок и запусти сессию.</li>
-              <li>Собери CSV/JSON для отчёта или последующего анализа.</li>
-            </ol>
-          </div>
-        </section>
+                 </section>
 
         <section class="card camera-panel">
           <div class="panel-head">
@@ -98,10 +76,7 @@
             <video id="video" autoplay playsinline muted></video>
             <canvas id="overlay"></canvas>
           </div>
-          <p class="muted tiny">
-            Разметка глаз и радужки рисуется поверх видеопотока. Обработка выполняется локально в браузере.
-          </p>
-        </section>
+                  </section>
 
         <section id="boardPanel" class="card board-panel">
           <div class="panel-head board-head">
@@ -112,7 +87,7 @@
             </div>
           </div>
           <p id="boardHint" class="muted">
-            Выполни калибровку, затем начни сессию и анализируй распределение внимания по зонам интереса.
+            Выполнить калибровку, затем начать сессию и анализ.
           </p>
           <div id="calibrationToolbar" class="calibration-toolbar hidden">
             <div>
@@ -177,24 +152,7 @@
           </div>
         </section>
 
-        <section class="card practice-panel">
-          <h2>Что закрывает практику</h2>
-          <ul class="check-list">
-            <li>стенд развёртывается локально и в контейнере;</li>
-            <li>есть данные для тестирования и воспроизводимого запуска;</li>
-            <li>реализована фиксация результатов исследования;</li>
-            <li>есть документация по Docker, CI/CD и отчёту;</li>
-            <li>можно публиковать статическую версию через GitHub Pages.</li>
-          </ul>
-          <div class="note-callout">
-            <strong>Для темы о рентгенологе:</strong>
-            <span>
-              используй загруженные тестовые снимки, анализ зон внимания и export CSV/JSON как основу
-              для описания наблюдения и сравнения стратегий просмотра изображения.
-            </span>
-          </div>
-        </section>
-      </main>
+             </main>
     </div>
 
     <script type="module" src="./app.js"></script>
